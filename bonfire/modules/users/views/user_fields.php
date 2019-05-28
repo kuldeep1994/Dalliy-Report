@@ -85,7 +85,7 @@ if (! empty($languages) && is_array($languages)) :
     endif;
 endif;
 ?>
-<div class="control-group<?php echo form_error('timezones') ? $errorClass : ''; ?>">
+<!--<div class="control-group<?php echo form_error('timezones') ? $errorClass : ''; ?>">
     <label class="control-label required" for="timezones"><?php echo lang('bf_timezone'); ?></label>
     <div class="controls">
         <?php
@@ -98,4 +98,4 @@ endif;
         ?>
         <span class="help-inline"><?php echo form_error('timezones'); ?></span>
     </div>
-</div>
+</div>-->

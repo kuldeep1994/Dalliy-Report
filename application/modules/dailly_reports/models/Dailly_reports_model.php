@@ -97,5 +97,9 @@ class Dailly_reports_model extends BF_Model
     public function __construct()
     {
         parent::__construct();
-    }
+	}
+	
+	public function getUserName($user_id){
+		return $this->db->get_where('users',array('id'=>$user_id))->row()->username;
+	}
 }

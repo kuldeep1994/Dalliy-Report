@@ -69,11 +69,6 @@ class User_model extends BF_Model
             'rules' => 'required|trim',
         ),
         array(
-            'field' => 'timezones',
-            'label' => 'lang:bf_timezone',
-            'rules' => 'required|trim|max_length[40]',
-        ),
-        array(
             'field' => 'username',
             'label' => 'lang:bf_username',
             'rules' => 'trim|max_length[30]',
@@ -88,6 +83,11 @@ class User_model extends BF_Model
             'label' => 'lang:us_role',
             'rules' => 'trim|max_length[2]|is_numeric',
         ),
+        /*array(
+            'field' => 'timezones',
+            'label' => 'lang:bf_timezone',
+            'rules' => 'required|trim|max_length[40]',
+        ),*/
     );
 
     /** @var Array Additional validation rules only used on insert. */

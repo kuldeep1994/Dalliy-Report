@@ -2,7 +2,7 @@
     <hr />
     <footer class="footer">
         <div class="container">
-            <p>Powered by <a href="http://cibonfire.com" target="_blank">Bonfire <?php echo BONFIRE_VERSION; ?></a></p>
+            <p>Powered by <a href="http://wntechs.com/" target="_blank">WNT</a></p>
         </div>
     </footer>
     <?php endif; ?>

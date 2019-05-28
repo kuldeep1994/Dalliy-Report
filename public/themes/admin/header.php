@@ -42,11 +42,17 @@ if (isset($shortcut_data) && is_array($shortcut_data['shortcut_keys'])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <?php
-                echo anchor('/', html_escape($this->settings_lib->item('site.title')), 'class="brand"');
-                if (isset($shortcut_data) && is_array($shortcut_data['shortcuts'])
+                <?php 
+                    if($this->session->userdata('role_id')=='1'){
+                       echo anchor('admin/content', html_escape($this->settings_lib->item('site.title')), 'class="brand"');
+                    }
+                    else{
+                        echo anchor('admin/reports/dailly_reports', html_escape($this->settings_lib->item('site.title')), 'class="brand"');
+                    }
+                    if (isset($shortcut_data) && is_array($shortcut_data['shortcuts'])
                     && is_array($shortcut_data['shortcut_keys']) && count($shortcut_data['shortcut_keys'])
-                   ) :
+                    ) : 
+                    
                 ?>
                 <!-- Shortcut Menu -->
                 <div class="nav pull-right" id="shortcuts">

@@ -73,7 +73,25 @@ class Reports extends Admin_Controller
 
         $this->load->library('pagination');
         $pager['base_url']    = $pagerBaseUrl;
-        $pager['total_rows']  = $this->dailly_reports_model->count_all();
+
+        if (isset($_POST['action_search'])) {
+
+            $task_id = $_POST['task_id'];
+
+            $this->db->select('*');
+            $this->db->from('bf_dailly_reports');
+            $this->db->join('bf_users','bf_users.id=bf_dailly_reports.user_id');
+            $this->db->like('bf_dailly_reports.pms_task_id', $task_id);
+            $this->db->or_like('bf_dailly_reports.project_name', $task_id);
+            $this->db->or_like('bf_users.username', $task_id);
+            $query = $this->db->get();
+            $records = $query->result();
+            $pager['total_rows']  = sizeof($records);
+
+        }else{
+            $pager['total_rows']  = $this->dailly_reports_model->count_all();
+        }
+
         $pager['per_page']    = $limit;
         $pager['uri_segment'] = $pagerUriSegment;
 
@@ -81,7 +99,21 @@ class Reports extends Admin_Controller
         $this->dailly_reports_model->limit($limit, $offset);
         
         if($this->session->userdata('role_id')=='1'){
-            $records = $this->dailly_reports_model->find_all();
+            if (isset($_POST['action_search'])) {
+
+                $task_id = $_POST['task_id'];
+                $this->db->select('bf_dailly_reports.*');
+                $this->db->from('bf_dailly_reports');
+                $this->db->join('bf_users','bf_users.id=bf_dailly_reports.user_id');
+                $this->db->like('bf_dailly_reports.pms_task_id', $task_id);
+                $this->db->or_like('bf_dailly_reports.project_name', $task_id);
+                $this->db->or_like('bf_users.username', $task_id);
+                $query = $this->db->get();
+                $records = $query->result();
+    
+            }else{
+                $records = $this->dailly_reports_model->find_all();
+            }
         }
         else{
             $records = $this->dailly_reports_model->find_all_by('user_id',$this->session->userdata('user_id'));
@@ -227,8 +259,15 @@ class Reports extends Admin_Controller
 
         $start_time = $this->input->post('start_time');
 
+        $start_date = date('Y-m-d',strtotime($start_time));
+        $end_date = date('Y-m-d',strtotime($end_time));
+
         if ($end_time < $start_time || $end_time == $start_time) {
-            $this->form_validation->set_message('validate_end_time', 'Invalid end time ' . $end_time . ',because end time must be grater then start time');
+            $this->form_validation->set_message('validate_end_time', 'End time should be greater than start time');
+            return false;
+        }
+        if ($start_date!=$end_date) {
+            $this->form_validation->set_message('validate_end_time', 'Date of start time and end time should be same');
             return false;
         }
         else {
@@ -241,10 +280,17 @@ class Reports extends Admin_Controller
     {
         $task_id  = $this->input->post('task_id');
         $end_time = $this->input->post('end_time');
+
         $report   = $this->db->get_where('bf_dailly_reports',array('id'=>$task_id))->row();
         $start_time = $report->start_time;
-        if($end_time<$start_time){
-            echo json_encode(array('token'=>$this->security->get_csrf_hash(),'data'=>$report,'error'=>'Please enter valid end time,because end time must be grater then start time'));
+
+        $start_date = date('Y-m-d',strtotime($start_time));
+        $end_date = date('Y-m-d',strtotime($end_time));
+        if($end_time<$start_time or $end_time==$start_time){
+                echo json_encode(array('token'=>$this->security->get_csrf_hash(),'data'=>$report,'error'=>'End time should be greater than start time'));
+        }
+        elseif ($start_date!=$end_date) {
+                echo json_encode(array('token'=>$this->security->get_csrf_hash(),'data'=>$report,'error'=>'Date of start time and end time should be same'));
         }
         else{
             $data['end_time'] = $end_time;

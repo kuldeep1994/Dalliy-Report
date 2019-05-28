@@ -1,5 +1,5 @@
 <div class="jumbotron" text-align="center">
-	<h1>Welcome to Bonfire</h1>
+	<h1>Welcome to reporting management software</h1>
 
 	<p class="lead">Kickstart your CodeIgniter applications and save yourself 100s of hours of development time.<br/>That means you make more money.</p>
 
@@ -8,13 +8,11 @@
 	<?php else :?>
 		<a href="<?php echo site_url(LOGIN_URL); ?>" class="btn btn-large btn-primary"><?php echo lang('bf_action_login'); ?></a>
 	<?php endif;?>
-
-	<br/><br/><a href="<?php echo site_url('/docs') ?>" class="btn btn-large btn-info">Browse the Docs</a>
 </div>
 
 <hr />
 
-<div class="row-fluid">
+<!--<div class="row-fluid">
 
 	<div class="span6">
 		<h4>A Solid Base</h4>
@@ -45,4 +43,4 @@
 		<p><i>Role-Based Access Control</i> that provides as much fine-grained control as your modules need.</p>
 	</div>
 
-</div>
+</div>-->

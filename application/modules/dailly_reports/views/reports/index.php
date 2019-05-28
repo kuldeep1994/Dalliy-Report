@@ -10,9 +10,20 @@ if ($can_delete) {
 }
 ?>
 <div class='admin-box'>
+
 	<h3>
 		<?php echo lang('dailly_reports_area_title'); ?>
 	</h3>
+	
+  <?php if($this->session->userdata('role_id')=='1') { ?>
+	<?php echo form_open($this->uri->uri_string()); ?>
+			<div class="search_form">
+					<input type="text" name="task_id" placeholder="Please enter taskid or username or project name"></td>
+					<input type="submit" name="action_search" value="search" class="btn btn-success"></td>
+			</div>
+	<?php echo form_close(); ?>
+	<?php } ?>
+	
 	<?php echo form_open($this->uri->uri_string()); ?>
 		<table class='table table-striped'>
 			<thead>
@@ -27,6 +38,9 @@ if ($can_delete) {
 					<th><?php echo lang('dailly_reports_field_task_description'); ?></th>
 					<th><?php echo lang('dailly_reports_field_start_time'); ?></th>
 					<th><?php echo lang('dailly_reports_field_end_time'); ?></th>
+					<?php if($this->session->userdata('role_id')=='1'){ ?>
+					<th><?php echo lang('dailly_reports_field_user_name'); ?></th>
+					<?php } ?>
 					<th><?php echo lang('dailly_reports_field_status'); ?></th>
 					<div class="image_loader">
 					<img src="<?php echo site_url();?>/assets/images/loading.gif" style=" width: 20%;z-index: 11111;position: absolute;margin-left: 40%;top: 0%;">
@@ -69,18 +83,31 @@ if ($can_delete) {
 					<td><?php e($record->task_description); ?></td>
 					<td><?php e($record->start_time); ?></td>
 					<td><?php e($record->end_time); ?></td>
-					<td><?php e($record->status); ?></td>
+					<?php if($this->session->userdata('role_id')=='1'){ ?>
+					<td><?php e($this->dailly_reports_model->getUserName($record->user_id)); ?></td>
+					<?php } ?>
+					<td>
+					    <?php if($record->status=='Completed') { ?>
+					        <span></span>Request Modification</span>
+							<?php } if($record->status=='Change Requested') { ?>
+								  <span>Modification Request Sent</span>
+							<?php } if($record->status=='Updated/Changed') { ?>
+								  <span>Modified</span>
+							<?php } if(($record->status=='In Progress' and empty($record->end_time)) or ($record->end_time=='0000-00-00 00:00:00')) { ?>
+					        <span><?php echo lang('dailly_reports_column_mark_complete'); ?></span>
+							<?php } ?>
+					</td>
 					<td><?php echo $record->deleted > 0 ? lang('dailly_reports_true') : lang('dailly_reports_false'); ?></td>
 					<td><?php e($record->created_on); ?></td>
 					<td><?php e($record->modified_on); ?></td>
 					<td>
 					    <?php if($record->status=='Completed') { ?>
-					        <span class="requested" data-task_id="<?php e($record->id); ?>">Change Requested</span>
+					        <span class="requested" data-task_id="<?php e($record->id); ?>">Request Modification</span>
 							<?php } if($record->status=='Change Requested') { ?>
-								  <span class="requested" data-task_id="<?php e($record->id); ?>">Change Requested</span>
+								  <span>Modification Request Sent</span>
 							<?php } if($record->status=='Updated/Changed') { ?>
-								    <span>Updated/Changed</span>
-							<?php } if($record->status=='In Progress') { ?>
+								  <span>Modified</span>
+							<?php } if(($record->status=='In Progress' and empty($record->end_time)) or $record->end_time=='0000-00-00 00:00:00') { ?>
 					        <button type="button" class="btn btn-success mark_complete" data-start_time="<?php e($record->start_time); ?>" data-task_id="<?php e($record->id); ?>"><?php echo lang('dailly_reports_column_mark_complete'); ?></button>
 							<?php } ?>
 					</td>
@@ -117,13 +144,26 @@ button.btn.btn-success.mark_complete {
 	cursor: pointer;
 }
 .image_loader{display:none}
+.search_form{
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+		-webkit-justify-content: flex-end;
+    -webkit-align-items: baseline;
+		-moz-justify-content: flex-end;
+    -moz-align-items: baseline;
+}
+.search_form .btn-success{
+   border-radius:0px;
+}
+.search_form input{border-radius:0px;}
 </style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script>
 
-var csrf_token = '<?php echo $this->security->get_csrf_hash(); ?>';
-
 $(document).ready(function() {
+
+	var csrf_token = '<?php echo $this->security->get_csrf_hash(); ?>';
 
     $('.mark_complete').click(function(){
 
