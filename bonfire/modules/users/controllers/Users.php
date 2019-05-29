@@ -100,11 +100,7 @@ class Users extends Front_Controller
             }
 
             // If there is nowhere else to go, go home.
-            if($this->session->userdata('role_id')=='1'){
-            Template::redirect('admin/content');
-            }else{
-                Template::redirect('admin/reports/dailly_reports');
-            }
+            Template::redirect('/');
         }
 
         // Prompt the user to login.
